@@ -38,8 +38,13 @@
               <text>LIVE</text>
             </view>
           </view>
-          <view class="chart-toggle" @click="toggleChartMode">
-            <text>{{ chartMode === 'line' ? '📊' : '📈' }}</text>
+          <view class="header-right">
+            <view class="refresh-btn" @click="refreshData" :class="{ 'loading': isRefreshing }">
+              <text>{{ isRefreshing ? '⏳' : '🔄' }}</text>
+            </view>
+            <view class="chart-toggle" @click="toggleChartMode">
+              <text>{{ chartMode === 'line' ? '📊' : '📈' }}</text>
+            </view>
           </view>
         </view>
         
@@ -375,7 +380,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
+import { dataService } from '../../data/dataService'
 
 const userAvatar = ref('👤')
 const username = ref('加密探险家')
@@ -396,6 +402,7 @@ const chartMin = ref('10.8亿')
 const chartLabels = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '现在']
 const lineChartData = ref([45, 52, 48, 65, 58, 72, 68, 78, 75, 85, 80, 88])
 const barChartData = ref([45, 52, 48, 65, 58, 72, 68, 78, 75, 85, 80, 88])
+const isRefreshing = ref(false)
 
 const chartPoints = computed(() => {
   return lineChartData.value.map((val, i) => {
@@ -508,6 +515,47 @@ const getRankClass = (rank: number) => {
 const toggleChartMode = () => {
   chartMode.value = chartMode.value === 'line' ? 'bar' : 'line'
 }
+
+const refreshData = async () => {
+  if (isRefreshing.value) return
+  
+  isRefreshing.value = true
+  try {
+    await dataService.refreshData()
+    await loadData()
+    uni.showToast({ title: '数据已更新', icon: 'success' })
+  } catch (error) {
+    console.error('刷新失败:', error)
+    uni.showToast({ title: '刷新失败', icon: 'none' })
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+const loadData = async () => {
+  try {
+    const stats = await dataService.getMarketStats()
+    if (stats) {
+      totalMarketCap.value = stats.totalMarketCap
+      change24h.value = stats.change24h
+      volumeRate.value = stats.volumeRate
+      if (stats.chartData) {
+        lineChartData.value = stats.chartData.map(item => item.value)
+      }
+    }
+    
+    const collections = await dataService.getHotCollections(activeFilter.value)
+    if (collections) {
+      hotCollections.value = collections.slice(0, 10)
+    }
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
 
 const viewCollection = (item: { id: string }) => {
   uni.navigateTo({ url: `/pages/detail/detail?id=${item.id}` })
@@ -849,10 +897,37 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.refresh-btn {
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  transition: all 0.3s;
+  
+  &.loading {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .chart-toggle {
   width: 56rpx;
   height: 56rpx;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;

@@ -10,6 +10,7 @@ import {
   DataSource,
   ChartData
 } from './types';
+import { apiService } from './apiService';
 
 export class DataService {
   private static instance: DataService;
@@ -21,8 +22,8 @@ export class DataService {
 
   private constructor() {
     this.currentSource = {
-      name: 'Mock Data',
-      type: 'mock',
+      name: 'Real-time API',
+      type: 'api',
       enabled: true
     };
     this.cache = new Map();
@@ -334,12 +335,36 @@ export class DataService {
 
   async getMarketStats(): Promise<MarketStats> {
     return this.getCached('marketStats', async () => {
+      if (this.currentSource.type === 'api') {
+        try {
+          const apiData = await apiService.getMarketStats();
+          if (apiData) {
+            return apiData;
+          }
+        } catch (error) {
+          console.log('API获取失败，使用本地数据');
+        }
+      }
       return this.mockData.marketStats;
     });
   }
 
   async getHotCollections(filter: 'hot' | 'rise' | 'new' = 'hot'): Promise<Collection[]> {
     return this.getCached(`collections_${filter}`, async () => {
+      if (this.currentSource.type === 'api') {
+        try {
+          const apiData = await apiService.getCollections();
+          if (apiData) {
+            let collections = [...apiData];
+            if (filter === 'rise') {
+              collections.sort((a, b) => parseFloat(b.change) - parseFloat(a.change));
+            }
+            return collections;
+          }
+        } catch (error) {
+          console.log('API获取失败，使用本地数据');
+        }
+      }
       let collections = [...this.mockData.collections];
       if (filter === 'rise') {
         collections.sort((a, b) => parseFloat(b.change) - parseFloat(a.change));
@@ -349,7 +374,28 @@ export class DataService {
   }
 
   async getCollectionDetail(id: string): Promise<Collection | null> {
+    if (this.currentSource.type === 'api') {
+      try {
+        const apiData = await apiService.getCollectionDetail(id);
+        if (apiData) {
+          return apiData;
+        }
+      } catch (error) {
+        console.log('API获取失败，使用本地数据');
+      }
+    }
     return this.mockData.collections.find((c: Collection) => c.id === id) || null;
+  }
+
+  async refreshData(): Promise<void> {
+    if (this.currentSource.type === 'api') {
+      try {
+        await apiService.refreshData();
+        this.clearCache();
+      } catch (error) {
+        console.error('刷新数据失败:', error);
+      }
+    }
   }
 
   async getDynamics(type: 'follow' | 'hot' = 'hot'): Promise<Dynamic[]> {
