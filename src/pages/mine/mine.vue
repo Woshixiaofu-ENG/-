@@ -11,11 +11,14 @@
         </view>
         <view class="user-detail">
           <text class="user-name">数藏爱好者</text>
-          <text class="user-id">ID: 88888888</text>
+          <text class="user-level">Lv.12 · EXP: 8,500</text>
         </view>
         <view class="settings-btn" @click="goToSettings">
           <text>⚙️</text>
         </view>
+      </view>
+      <view class="exp-bar">
+        <view class="exp-progress" :style="{ width: '85%' }"></view>
       </view>
     </view>
 
@@ -115,7 +118,8 @@ const profitClass = computed(() => {
 const menuItems = [
   { icon: '🔔', label: '价格预警', url: '/pages/mine/mine?tab=alert' },
   { icon: '📊', label: '数据分析', url: '/pages/stats/monthly' },
-  { icon: '💬', label: '社区讨论', url: '' },
+  { icon: '💬', label: '社区讨论', url: '/pages/community/community' },
+  { icon: '⚙️', label: '数据管理', url: '/pages/admin/admin' },
   { icon: '📖', label: '帮助中心', url: '' },
   { icon: '⭐', label: '收藏夹', url: '' },
   { icon: '📝', label: '意见反馈', url: '' }
@@ -156,20 +160,26 @@ const viewAllTransactions = () => {
   uni.showToast({ title: '查看全部交易', icon: 'none' })
 }
 
-const handleMenuClick = (item: { label: string }) => {
-  uni.showToast({ title: item.label, icon: 'none' })
+const handleMenuClick = (item: { label: string, url?: string }) => {
+  if (item.url) {
+    uni.navigateTo({ url: item.url, fail: () => {
+      uni.showToast({ title: item.label, icon: 'none' })
+    }})
+  } else {
+    uni.showToast({ title: item.label, icon: 'none' })
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .page-container {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
   padding-bottom: calc(env(safe-area-inset-bottom) + 120rpx);
 }
 
 .custom-navbar {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: transparent;
   padding: 80rpx 32rpx 32rpx;
 }
 
@@ -180,7 +190,7 @@ const handleMenuClick = (item: { label: string }) => {
 }
 
 .user-section {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 32rpx;
   margin-top: -20rpx;
 }
@@ -199,6 +209,7 @@ const handleMenuClick = (item: { label: string }) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 20rpx rgba(102, 126, 234, 0.5);
 }
 
 .avatar-icon {
@@ -218,9 +229,9 @@ const handleMenuClick = (item: { label: string }) => {
   color: #fff;
 }
 
-.user-id {
+.user-level {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .settings-btn {
@@ -234,12 +245,27 @@ const handleMenuClick = (item: { label: string }) => {
   font-size: 28rpx;
 }
 
+.exp-bar {
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4rpx;
+  margin-top: 20rpx;
+  overflow: hidden;
+}
+
+.exp-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #10b981 100%);
+  border-radius: 4rpx;
+  transition: width 0.5s ease;
+}
+
 .portfolio-section {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
   margin: 20rpx;
   border-radius: 16rpx;
   padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .portfolio-header {
@@ -252,14 +278,14 @@ const handleMenuClick = (item: { label: string }) => {
 .portfolio-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #1e293b;
+  color: #fff;
 }
 
 .view-all {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  color: #8b5cf6;
+  color: #667eea;
   font-size: 26rpx;
 }
 
@@ -271,15 +297,15 @@ const handleMenuClick = (item: { label: string }) => {
   display: flex;
   justify-content: space-around;
   padding: 20rpx 0;
-  border-top: 1rpx solid #f1f5f9;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .stat-item {
   text-align: center;
 
   &.profit {
-    border-left: 1rpx solid #f1f5f9;
-    border-right: 1rpx solid #f1f5f9;
+    border-left: 1rpx solid rgba(255, 255, 255, 0.1);
+    border-right: 1rpx solid rgba(255, 255, 255, 0.1);
     padding: 0 48rpx;
   }
 }
@@ -288,7 +314,7 @@ const handleMenuClick = (item: { label: string }) => {
   display: block;
   font-size: 36rpx;
   font-weight: 700;
-  color: #1e293b;
+  color: #fff;
   margin-bottom: 8rpx;
 
   &.positive {
@@ -302,15 +328,15 @@ const handleMenuClick = (item: { label: string }) => {
 
 .stat-label {
   font-size: 24rpx;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .holdings-list {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
   margin: 0 20rpx;
   border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .holding-item {
@@ -318,7 +344,7 @@ const handleMenuClick = (item: { label: string }) => {
   align-items: center;
   gap: 16rpx;
   padding: 20rpx;
-  border-bottom: 1rpx solid #f1f5f9;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
 
   &:last-child {
     border-bottom: none;
@@ -328,7 +354,7 @@ const handleMenuClick = (item: { label: string }) => {
 .holding-image {
   width: 80rpx;
   height: 80rpx;
-  background: #f8fafc;
+  background: rgba(102, 126, 234, 0.2);
   border-radius: 12rpx;
   display: flex;
   align-items: center;
@@ -347,7 +373,7 @@ const handleMenuClick = (item: { label: string }) => {
   display: block;
   font-size: 28rpx;
   font-weight: 500;
-  color: #1e293b;
+  color: #fff;
   margin-bottom: 8rpx;
 }
 
@@ -358,7 +384,7 @@ const handleMenuClick = (item: { label: string }) => {
 
 .meta-item {
   font-size: 22rpx;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .holding-profit {
@@ -393,11 +419,11 @@ const handleMenuClick = (item: { label: string }) => {
 }
 
 .transaction-section {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
   margin: 20rpx;
   border-radius: 16rpx;
   padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .section-header {
@@ -410,7 +436,7 @@ const handleMenuClick = (item: { label: string }) => {
 .section-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #1e293b;
+  color: #fff;
 }
 
 .transaction-list {
@@ -424,7 +450,7 @@ const handleMenuClick = (item: { label: string }) => {
   align-items: center;
   gap: 16rpx;
   padding: 16rpx;
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12rpx;
 }
 
@@ -438,19 +464,19 @@ const handleMenuClick = (item: { label: string }) => {
   font-size: 28rpx;
 
   &.buy {
-    background: #dbeafe;
+    background: rgba(59, 130, 246, 0.2);
   }
 
   &.sell {
-    background: #d1fae5;
+    background: rgba(16, 185, 129, 0.2);
   }
 
   &.auction {
-    background: #fef3c7;
+    background: rgba(245, 158, 11, 0.2);
   }
 
   &.consignment {
-    background: #fce7f3;
+    background: rgba(236, 72, 153, 0.2);
   }
 }
 
@@ -462,13 +488,13 @@ const handleMenuClick = (item: { label: string }) => {
   display: block;
   font-size: 28rpx;
   font-weight: 500;
-  color: #1e293b;
+  color: #fff;
   margin-bottom: 4rpx;
 }
 
 .transaction-time {
   font-size: 22rpx;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .transaction-amount {
@@ -507,11 +533,11 @@ const handleMenuClick = (item: { label: string }) => {
 }
 
 .menu-section {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
   margin: 20rpx;
   border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .menu-item {
@@ -519,14 +545,14 @@ const handleMenuClick = (item: { label: string }) => {
   align-items: center;
   gap: 16rpx;
   padding: 24rpx;
-  border-bottom: 1rpx solid #f1f5f9;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:active {
-    background: #f8fafc;
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -537,12 +563,12 @@ const handleMenuClick = (item: { label: string }) => {
 .menu-label {
   flex: 1;
   font-size: 28rpx;
-  color: #1e293b;
+  color: #fff;
 }
 
 .menu-arrow {
   font-size: 24rpx;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .risk-warning {
@@ -552,8 +578,9 @@ const handleMenuClick = (item: { label: string }) => {
   gap: 8rpx;
   padding: 24rpx;
   margin: 20rpx;
-  background: #fffbeb;
+  background: rgba(245, 158, 11, 0.1);
   border-radius: 12rpx;
+  border: 1rpx solid rgba(245, 158, 11, 0.3);
 }
 
 .warning-icon {
@@ -562,7 +589,7 @@ const handleMenuClick = (item: { label: string }) => {
 
 .warning-text {
   font-size: 24rpx;
-  color: #92400e;
+  color: #fbbf24;
   text-align: center;
 }
 </style>

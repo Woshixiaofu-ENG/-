@@ -64,6 +64,13 @@
 				"navigationBarTitleText": "藏友动态",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/admin/admin",
+			"style": {
+				"navigationBarTitleText": "数据管理后台",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
