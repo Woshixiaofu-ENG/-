@@ -11,7 +11,7 @@ import {
 
 // API配置
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000/api',
+  baseUrl: 'http://localhost:3001/api',
   timeout: 10000
 };
 
