@@ -1,0 +1,100 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "数藏助手",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/market/market",
+			"style": {
+				"navigationBarTitleText": "寄售市场",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/auction/auction",
+			"style": {
+				"navigationBarTitleText": "竞拍中心",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/stats/monthly",
+			"style": {
+				"navigationBarTitleText": "每月统计"
+			}
+		},
+		{
+			"path": "pages/stats/weekly",
+			"style": {
+				"navigationBarTitleText": "每周统计"
+			}
+		},
+		{
+			"path": "pages/calendar/calendar",
+			"style": {
+				"navigationBarTitleText": "中传日历"
+			}
+		},
+		{
+			"path": "pages/ranking/ranking",
+			"style": {
+				"navigationBarTitleText": "完整榜单"
+			}
+		},
+		{
+			"path": "pages/detail/detail",
+			"style": {
+				"navigationBarTitleText": "藏品详情"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "数藏助手",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F5F7FA"
+	},
+	"tabBar": {
+		"color": "#999999",
+		"selectedColor": "#1E88E5",
+		"borderStyle": "white",
+		"backgroundColor": "#FFFFFF",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/icons/home.png",
+				"selectedIconPath": "static/icons/home-active.png"
+			},
+			{
+				"pagePath": "pages/market/market",
+				"text": "市场",
+				"iconPath": "static/icons/market.png",
+				"selectedIconPath": "static/icons/market-active.png"
+			},
+			{
+				"pagePath": "pages/auction/auction",
+				"text": "竞拍",
+				"iconPath": "static/icons/auction.png",
+				"selectedIconPath": "static/icons/auction-active.png"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"text": "我的",
+				"iconPath": "static/icons/mine.png",
+				"selectedIconPath": "static/icons/mine-active.png"
+			}
+		]
+	}
+}

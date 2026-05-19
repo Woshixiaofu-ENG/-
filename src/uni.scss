@@ -1,0 +1,51 @@
+$primary-color: #1E88E5;
+$primary-light: #42A5F5;
+$primary-dark: #1565C0;
+$success-color: #4CAF50;
+$warning-color: #FF9800;
+$danger-color: #F44336;
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-hint: #999999;
+$bg-color: #F5F7FA;
+$bg-white: #FFFFFF;
+$border-color: #E8E8E8;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin card-style {
+  background: $bg-white;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx $shadow-color;
+}
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-ellipsis-multi($lines: 2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
